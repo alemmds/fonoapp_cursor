@@ -11,7 +11,7 @@
   <!-- Container Principal -->
   <div class="flex min-h-screen">
     <!-- Menu Lateral -->
-    <div class="w-64 bg-blue-900 text-white p-6 relative transition-all duration-300" id="menu-lateral">
+    <div id="menu-lateral" class="w-64 bg-blue-900 text-white p-6 relative transition-all duration-300">
       <!-- Botão de Minimizar/Maximizar -->
       <button id="toggle-menu" class="absolute top-2 right-2 p-2 bg-blue-800 rounded-full hover:bg-blue-700 transition">
         <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -21,7 +21,6 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
-
       <!-- Título e Menu -->
       <h1 class="text-2xl font-bold mb-8">FonoClinic</h1>
       <nav>
@@ -53,7 +52,7 @@
               </li>
             </ul>
           </li>
-
+  
           <!-- Sessão de Consultas -->
           <li class="mb-4">
             <a href="#consultas" class="menu-item flex items-center p-2 rounded" onclick="showSection('consultas-gerais')">
@@ -75,7 +74,7 @@
               </li>
             </ul>
           </li>
-
+  
           <!-- Sessão de Pacientes -->
           <li class="mb-4">
             <a href="#pacientes" class="menu-item flex items-center p-2 rounded" onclick="showSection('pacientes')">
@@ -83,7 +82,7 @@
               <span class="text-xl">Pacientes</span>
             </a>
           </li>
-
+  
           <!-- Sessão de Profissionais -->
           <li class="mb-4">
             <a href="#profissionais" class="menu-item flex items-center p-2 rounded" onclick="showSection('profissionais')">
@@ -94,7 +93,7 @@
         </ul>
       </nav>
     </div>
-
+  
     <!-- Conteúdo Principal -->
     <div class="flex-1 p-8">
       <!-- Seção de Cadastro de Pacientes -->
@@ -117,7 +116,7 @@
           </form>
         </div>
       </section>
-
+  
       <!-- Seção de Cadastro de Especialistas -->
       <section id="cadastro-especialistas" class="section hidden">
         <h2 class="text-3xl font-bold mb-6">Cadastro de Especialistas</h2>
@@ -142,7 +141,7 @@
           </form>
         </div>
       </section>
-
+  
       <!-- Seção de Cadastro de Consultas -->
       <section id="cadastro-consultas" class="section hidden">
         <h2 class="text-3xl font-bold mb-6">Cadastro de Consultas</h2>
@@ -165,7 +164,7 @@
           </form>
         </div>
       </section>
-
+  
       <!-- Seção de Consultas Gerais -->
       <section id="consultas-gerais" class="section hidden">
         <h2 class="text-3xl font-bold mb-6">Consultas Gerais</h2>
@@ -200,7 +199,7 @@
           </table>
         </div>
       </section>
-
+  
       <!-- Seção de Consultas do Dia -->
       <section id="consultas-dia" class="section hidden">
         <h2 class="text-3xl font-bold mb-6">Consultas do Dia</h2>
@@ -235,7 +234,7 @@
           </table>
         </div>
       </section>
-
+  
       <!-- Seção de Pacientes -->
       <section id="pacientes" class="section hidden">
         <h2 class="text-3xl font-bold mb-6">Pacientes</h2>
@@ -266,7 +265,7 @@
           </table>
         </div>
       </section>
-
+  
       <!-- Seção de Profissionais -->
       <section id="profissionais" class="section hidden">
         <h2 class="text-3xl font-bold mb-6">Profissionais</h2>
@@ -291,7 +290,21 @@
       </section>
     </div>
   </div>
-
+  
+  <!-- Tela de Login (Overlay) -->
+  <div id="login-screen">
+    <div class="login-container">
+      <h2 class="text-2xl font-bold mb-4">Acesse o Sistema</h2>
+      <form id="login-form">
+        <input type="password" id="login-password" class="p-2 border rounded w-full" placeholder="Digite a senha" required>
+        <div id="login-error" class="hidden text-red-500 mt-2">Senha incorreta!</div>
+        <button type="submit" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-full">
+          Entrar
+        </button>
+      </form>
+    </div>
+  </div>
+  
   <script src="script.js"></script>
 </body>
 </html>
