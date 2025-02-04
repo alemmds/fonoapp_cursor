@@ -1,4 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // MÓDULO DE LOGIN POR SENHA
+  const loginScreen = document.getElementById('login-screen');
+  const loginForm = document.getElementById('login-form');
+  const loginPassword = document.getElementById('login-password');
+  const loginError = document.getElementById('login-error');
+
+  // Sempre exibe a tela de login para que o usuário insira a senha
+  loginScreen.style.display = 'flex';
+  
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (loginPassword.value === 'Clinicafono1570') {
+      // Se a senha estiver correta, oculta a tela de login e permite o acesso ao sistema
+      loginScreen.style.display = 'none';
+    } else {
+      // Em caso de senha incorreta, exibe a mensagem de erro
+      loginError.classList.remove('hidden');
+    }
+  });
+
   // Mapeamento das seções
   const sections = {
     'cadastro-pacientes': document.getElementById('cadastro-pacientes'),
@@ -35,7 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Função para mostrar uma seção
   window.showSection = (sectionId) => {
     Object.values(sections).forEach(section => section.classList.remove('active'));
-    sections[sectionId].classList.add('active');
+    if (sections[sectionId]) {
+      sections[sectionId].classList.add('active', 'fade-in');
+    }
   };
 
   // Função para alternar o menu lateral
@@ -49,38 +71,37 @@ document.addEventListener('DOMContentLoaded', () => {
     closeIcon.classList.toggle('hidden');
   };
 
-  // Evento de clique para o botão de minimizar/maximizar
   document.getElementById('toggle-menu').addEventListener('click', toggleMenu);
 
   // Função para adicionar/atualizar um paciente
-  forms.paciente.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const paciente = {
-      id: editingPacienteId || Date.now(),
-      nome: document.getElementById('nome-paciente').value,
-      cpf: document.getElementById('cpf-paciente').value,
-      idade: document.getElementById('idade-paciente').value,
-      responsavel: document.getElementById('responsavel-paciente').value,
-      telefone: document.getElementById('telefone-paciente').value,
-      email: document.getElementById('email-paciente').value,
-      ultimaConsulta: document.getElementById('ultima-consulta').value
-    };
+  if (forms.paciente) {
+    forms.paciente.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const paciente = {
+        id: editingPacienteId || Date.now(),
+        nome: document.getElementById('nome-paciente').value,
+        cpf: document.getElementById('cpf-paciente').value,
+        idade: document.getElementById('idade-paciente').value,
+        responsavel: document.getElementById('responsavel-paciente').value,
+        telefone: document.getElementById('telefone-paciente').value,
+        email: document.getElementById('email-paciente').value,
+        ultimaConsulta: document.getElementById('ultima-consulta').value
+      };
 
-    if (editingPacienteId) {
-      // Atualiza o paciente existente
-      const index = dbPacientes.findIndex(p => p.id === editingPacienteId);
-      dbPacientes[index] = paciente;
-      editingPacienteId = null;
-    } else {
-      // Adiciona um novo paciente
-      dbPacientes.push(paciente);
-    }
+      if (editingPacienteId) {
+        const index = dbPacientes.findIndex(p => p.id === editingPacienteId);
+        dbPacientes[index] = paciente;
+        editingPacienteId = null;
+      } else {
+        dbPacientes.push(paciente);
+      }
 
-    saveData('db_pacientes', dbPacientes);
-    forms.paciente.reset();
-    updatePacientesTable();
-    alert('Paciente salvo com sucesso!');
-  });
+      saveData('db_pacientes', dbPacientes);
+      forms.paciente.reset();
+      updatePacientesTable();
+      alert('Paciente salvo com sucesso!');
+    });
+  }
 
   // Função para editar um paciente
   window.editarPaciente = (id) => {
@@ -132,31 +153,33 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Função para adicionar/atualizar um especialista
-  forms.especialista.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const especialista = {
-      id: editingEspecialistaId || Date.now(),
-      nome: document.getElementById('nome-especialista').value,
-      cpf: document.getElementById('cpf-especialista').value,
-      especialidade: document.getElementById('especialidade').value,
-      turno: document.getElementById('turno-especialista').value,
-      telefone: document.getElementById('telefone-especialista').value,
-      email: document.getElementById('email-especialista').value
-    };
+  if (forms.especialista) {
+    forms.especialista.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const especialista = {
+        id: editingEspecialistaId || Date.now(),
+        nome: document.getElementById('nome-especialista').value,
+        cpf: document.getElementById('cpf-especialista').value,
+        especialidade: document.getElementById('especialidade').value,
+        turno: document.getElementById('turno-especialista').value,
+        telefone: document.getElementById('telefone-especialista').value,
+        email: document.getElementById('email-especialista').value
+      };
 
-    if (editingEspecialistaId) {
-      const index = dbEspecialistas.findIndex(e => e.id === editingEspecialistaId);
-      dbEspecialistas[index] = especialista;
-      editingEspecialistaId = null;
-    } else {
-      dbEspecialistas.push(especialista);
-    }
+      if (editingEspecialistaId) {
+        const index = dbEspecialistas.findIndex(e => e.id === editingEspecialistaId);
+        dbEspecialistas[index] = especialista;
+        editingEspecialistaId = null;
+      } else {
+        dbEspecialistas.push(especialista);
+      }
 
-    saveData('db_especialistas', dbEspecialistas);
-    forms.especialista.reset();
-    updateProfissionaisTable();
-    alert('Especialista salvo com sucesso!');
-  });
+      saveData('db_especialistas', dbEspecialistas);
+      forms.especialista.reset();
+      updateProfissionaisTable();
+      alert('Especialista salvo com sucesso!');
+    });
+  }
 
   // Função para editar um especialista
   window.editarEspecialista = (id) => {
@@ -206,34 +229,36 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Função para adicionar/atualizar uma consulta
-  forms.consulta.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const consulta = {
-      id: editingConsultaId || Date.now(),
-      data: document.getElementById('data-consulta').value,
-      horario: document.getElementById('horario-consulta').value,
-      paciente: document.getElementById('nome-paciente-consulta').value,
-      idade: document.getElementById('idade-paciente-consulta').value,
-      responsavel: document.getElementById('responsavel-consulta').value,
-      telefone: document.getElementById('telefone-consulta').value,
-      especialidade: document.getElementById('especialidade-consulta').value,
-      consultorio: document.getElementById('consultorio-consulta').value,
-      especialista: document.getElementById('especialista-consulta').value
-    };
+  if (forms.consulta) {
+    forms.consulta.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const consulta = {
+        id: editingConsultaId || Date.now(),
+        data: document.getElementById('data-consulta').value,
+        horario: document.getElementById('horario-consulta').value,
+        paciente: document.getElementById('nome-paciente-consulta').value,
+        idade: document.getElementById('idade-paciente-consulta').value,
+        responsavel: document.getElementById('responsavel-consulta').value,
+        telefone: document.getElementById('telefone-consulta').value,
+        especialidade: document.getElementById('especialidade-consulta').value,
+        consultorio: document.getElementById('consultorio-consulta').value,
+        especialista: document.getElementById('especialista-consulta').value
+      };
 
-    if (editingConsultaId) {
-      const index = dbConsultas.findIndex(c => c.id === editingConsultaId);
-      dbConsultas[index] = consulta;
-      editingConsultaId = null;
-    } else {
-      dbConsultas.push(consulta);
-    }
+      if (editingConsultaId) {
+        const index = dbConsultas.findIndex(c => c.id === editingConsultaId);
+        dbConsultas[index] = consulta;
+        editingConsultaId = null;
+      } else {
+        dbConsultas.push(consulta);
+      }
 
-    saveData('db_consultas', dbConsultas);
-    forms.consulta.reset();
-    updateConsultasTables();
-    alert('Consulta salva com sucesso!');
-  });
+      saveData('db_consultas', dbConsultas);
+      forms.consulta.reset();
+      updateConsultasTables();
+      alert('Consulta salva com sucesso!');
+    });
+  }
 
   // Função para editar uma consulta
   window.editarConsulta = (id) => {
@@ -298,13 +323,77 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // Inicialização
+  // Funções de filtro para Consultas e Pacientes
+  window.filtrarConsultasGerais = function() {
+    const nome = document.getElementById("filter-consulta-geral-nome").value.toLowerCase();
+    const data = document.getElementById("filter-consulta-geral-data").value;
+    const horario = document.getElementById("filter-consulta-geral-horario").value;
+    const table = document.getElementById("tabela-consultas-gerais");
+    const tbody = table.getElementsByTagName("tbody")[0];
+    const rows = tbody.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName("td");
+      if (cells.length >= 3) {
+        const cellData = cells[0].textContent.trim();
+        const cellHorario = cells[1].textContent.trim();
+        const cellNome = cells[2].textContent.trim().toLowerCase();
+        
+        const matchNome = !nome || cellNome.includes(nome);
+        const matchData = !data || cellData.includes(data);
+        const matchHorario = !horario || cellHorario.includes(horario);
+        
+        rows[i].style.display = (matchNome && matchData && matchHorario) ? "" : "none";
+      }
+    }
+  };
+
+  window.filtrarConsultasDia = function() {
+    const nome = document.getElementById("filter-consulta-dia-nome").value.toLowerCase();
+    const data = document.getElementById("filter-consulta-dia-data").value;
+    const horario = document.getElementById("filter-consulta-dia-horario").value;
+    const table = document.getElementById("tabela-consultas-dia");
+    const tbody = table.getElementsByTagName("tbody")[0];
+    const rows = tbody.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName("td");
+      if (cells.length >= 3) {
+        const cellData = cells[0].textContent.trim();
+        const cellHorario = cells[1].textContent.trim();
+        const cellNome = cells[2].textContent.trim().toLowerCase();
+
+        const matchNome = !nome || cellNome.includes(nome);
+        const matchData = !data || cellData.includes(data);
+        const matchHorario = !horario || cellHorario.includes(horario);
+
+        rows[i].style.display = (matchNome && matchData && matchHorario) ? "" : "none";
+      }
+    }
+  };
+
+  window.filtrarPacientes = function() {
+    const nome = document.getElementById("filter-paciente-nome").value.toLowerCase();
+    const table = document.getElementById("tabela-pacientes");
+    const tbody = table.getElementsByTagName("tbody")[0];
+    const rows = tbody.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName("td");
+      if (cells.length > 0) {
+        const cellNome = cells[0].textContent.trim().toLowerCase();
+        rows[i].style.display = (!nome || cellNome.includes(nome)) ? "" : "none";
+      }
+    }
+  };
+
+  // Inicialização das seções e tabelas
   showSection('cadastro-pacientes');
   updatePacientesTable();
   updateConsultasTables();
   updateProfissionaisTable();
 
-  // Registra o Service Worker
+  // Registra o Service Worker, se suportado
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker
@@ -318,68 +407,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
-// FUNÇÕES DE FILTRO - adicionadas para as abas Consultas Gerais, Consultas do Dia e Pacientes
-
-window.filtrarConsultasGerais = function() {
-  const nome = document.getElementById("filter-consulta-geral-nome").value.toLowerCase();
-  const data = document.getElementById("filter-consulta-geral-data").value;
-  const horario = document.getElementById("filter-consulta-geral-horario").value;
-  const table = document.getElementById("tabela-consultas-gerais");
-  const tbody = table.getElementsByTagName("tbody")[0];
-  const rows = tbody.getElementsByTagName("tr");
-
-  for (let i = 0; i < rows.length; i++) {
-    const cells = rows[i].getElementsByTagName("td");
-    if (cells.length >= 3) {
-      const cellData = cells[0].textContent.trim();
-      const cellHorario = cells[1].textContent.trim();
-      const cellNome = cells[2].textContent.trim().toLowerCase();
-      
-      const matchNome = !nome || cellNome.includes(nome);
-      const matchData = !data || cellData.includes(data);
-      const matchHorario = !horario || cellHorario.includes(horario);
-      
-      rows[i].style.display = (matchNome && matchData && matchHorario) ? "" : "none";
-    }
-  }
-};
-
-window.filtrarConsultasDia = function() {
-  const nome = document.getElementById("filter-consulta-dia-nome").value.toLowerCase();
-  const data = document.getElementById("filter-consulta-dia-data").value;
-  const horario = document.getElementById("filter-consulta-dia-horario").value;
-  const table = document.getElementById("tabela-consultas-dia");
-  const tbody = table.getElementsByTagName("tbody")[0];
-  const rows = tbody.getElementsByTagName("tr");
-
-  for (let i = 0; i < rows.length; i++) {
-    const cells = rows[i].getElementsByTagName("td");
-    if (cells.length >= 3) {
-      const cellData = cells[0].textContent.trim();
-      const cellHorario = cells[1].textContent.trim();
-      const cellNome = cells[2].textContent.trim().toLowerCase();
-
-      const matchNome = !nome || cellNome.includes(nome);
-      const matchData = !data || cellData.includes(data);
-      const matchHorario = !horario || cellHorario.includes(horario);
-
-      rows[i].style.display = (matchNome && matchData && matchHorario) ? "" : "none";
-    }
-  }
-};
-
-window.filtrarPacientes = function() {
-  const nome = document.getElementById("filter-paciente-nome").value.toLowerCase();
-  const table = document.getElementById("tabela-pacientes");
-  const tbody = table.getElementsByTagName("tbody")[0];
-  const rows = tbody.getElementsByTagName("tr");
-
-  for (let i = 0; i < rows.length; i++) {
-    const cells = rows[i].getElementsByTagName("td");
-    if (cells.length > 0) {
-      const cellNome = cells[0].textContent.trim().toLowerCase();
-      rows[i].style.display = (!nome || cellNome.includes(nome)) ? "" : "none";
-    }
-  }
-};
