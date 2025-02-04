@@ -22,8 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let dbEspecialistas = JSON.parse(localStorage.getItem('db_especialistas')) || [];
   let dbConsultas = JSON.parse(localStorage.getItem('db_consultas')) || [];
 
-  // Variável global para armazenar o ID em edição
-  let editingId = null;
+  // Variáveis de edição separadas para cada entidade
+  let editingPacienteId = null;
+  let editingEspecialistaId = null;
+  let editingConsultaId = null;
 
   // Função para salvar dados no localStorage
   const saveData = (key, data) => {
@@ -54,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   forms.paciente.addEventListener('submit', (e) => {
     e.preventDefault();
     const paciente = {
-      id: editingId || Date.now(), // Usa o ID em edição ou gera um novo
+      id: editingPacienteId || Date.now(),
       nome: document.getElementById('nome-paciente').value,
       cpf: document.getElementById('cpf-paciente').value,
       idade: document.getElementById('idade-paciente').value,
@@ -64,11 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
       ultimaConsulta: document.getElementById('ultima-consulta').value
     };
 
-    if (editingId) {
+    if (editingPacienteId) {
       // Atualiza o paciente existente
-      const index = dbPacientes.findIndex(p => p.id === editingId);
+      const index = dbPacientes.findIndex(p => p.id === editingPacienteId);
       dbPacientes[index] = paciente;
-      editingId = null;
+      editingPacienteId = null;
     } else {
       // Adiciona um novo paciente
       dbPacientes.push(paciente);
@@ -91,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('telefone-paciente').value = paciente.telefone;
       document.getElementById('email-paciente').value = paciente.email;
       document.getElementById('ultima-consulta').value = paciente.ultimaConsulta;
-      editingId = paciente.id;
+      editingPacienteId = paciente.id;
       showSection('cadastro-pacientes');
     }
   };
@@ -133,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
   forms.especialista.addEventListener('submit', (e) => {
     e.preventDefault();
     const especialista = {
-      id: editingId || Date.now(), // Usa o ID em edição ou gera um novo
+      id: editingEspecialistaId || Date.now(),
       nome: document.getElementById('nome-especialista').value,
       cpf: document.getElementById('cpf-especialista').value,
       especialidade: document.getElementById('especialidade').value,
@@ -142,10 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
       email: document.getElementById('email-especialista').value
     };
 
-    if (editingId) {
-      const index = dbEspecialistas.findIndex(e => e.id === editingId);
+    if (editingEspecialistaId) {
+      const index = dbEspecialistas.findIndex(e => e.id === editingEspecialistaId);
       dbEspecialistas[index] = especialista;
-      editingId = null;
+      editingEspecialistaId = null;
     } else {
       dbEspecialistas.push(especialista);
     }
@@ -166,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('turno-especialista').value = especialista.turno;
       document.getElementById('telefone-especialista').value = especialista.telefone;
       document.getElementById('email-especialista').value = especialista.email;
-      editingId = especialista.id;
+      editingEspecialistaId = especialista.id;
       showSection('cadastro-especialistas');
     }
   };
@@ -207,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
   forms.consulta.addEventListener('submit', (e) => {
     e.preventDefault();
     const consulta = {
-      id: editingId || Date.now(), // Usa o ID em edição ou gera um novo
+      id: editingConsultaId || Date.now(),
       data: document.getElementById('data-consulta').value,
       horario: document.getElementById('horario-consulta').value,
       paciente: document.getElementById('nome-paciente-consulta').value,
@@ -219,10 +221,10 @@ document.addEventListener('DOMContentLoaded', () => {
       especialista: document.getElementById('especialista-consulta').value
     };
 
-    if (editingId) {
-      const index = dbConsultas.findIndex(c => c.id === editingId);
+    if (editingConsultaId) {
+      const index = dbConsultas.findIndex(c => c.id === editingConsultaId);
       dbConsultas[index] = consulta;
-      editingId = null;
+      editingConsultaId = null;
     } else {
       dbConsultas.push(consulta);
     }
@@ -246,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('especialidade-consulta').value = consulta.especialidade;
       document.getElementById('consultorio-consulta').value = consulta.consultorio;
       document.getElementById('especialista-consulta').value = consulta.especialista;
-      editingId = consulta.id;
+      editingConsultaId = consulta.id;
       showSection('cadastro-consultas');
     }
   };
