@@ -5,13 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginPassword = document.getElementById('login-password');
   const loginError = document.getElementById('login-error');
 
-  // Sempre exibe a tela de login para que o usuário insira a senha
+  // Exibe a tela de login ao carregar a página
   loginScreen.style.display = 'flex';
   
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     if (loginPassword.value === 'Clinicafono1570') {
-      // Se a senha estiver correta, oculta a tela de login e permite o acesso ao sistema
+      // Se a senha estiver correta, oculta a tela de login
       loginScreen.style.display = 'none';
     } else {
       // Em caso de senha incorreta, exibe a mensagem de erro
@@ -52,12 +52,17 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem(key, JSON.stringify(data));
   };
 
-  // Função para mostrar uma seção
+  // Função para mostrar uma seção (ajustada para remover/adicionar a classe 'hidden')
   window.showSection = (sectionId) => {
-    Object.values(sections).forEach(section => section.classList.remove('active'));
-    if (sections[sectionId]) {
-      sections[sectionId].classList.add('active', 'fade-in');
-    }
+    Object.entries(sections).forEach(([key, section]) => {
+      if (key === sectionId) {
+        section.classList.remove('hidden');
+        section.classList.add('active', 'fade-in');
+      } else {
+        section.classList.add('hidden');
+        section.classList.remove('active');
+      }
+    });
   };
 
   // Função para alternar o menu lateral
