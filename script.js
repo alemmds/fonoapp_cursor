@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
         id: editingConsultaId || Date.now(),
         data: document.getElementById('data-consulta').value,
         horario: document.getElementById('horario-consulta').value,
-        paciente: document.getElementById('paciente-consulta').value, // Corrigido aqui
+        paciente: document.getElementById('paciente-consulta').value,
         idade: document.getElementById('idade-consulta').value,
         responsavel: document.getElementById('responsavel-consulta').value,
         telefone: document.getElementById('telefone-consulta').value,
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       saveData('db_consultas', dbConsultas);
       forms.consulta.reset();
-      updateConsultasTables(); // Certifique-se de que esta função está correta
+      updateConsultasTables();
       alert('Consulta salva com sucesso!');
     });
   }
