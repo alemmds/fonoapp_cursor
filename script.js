@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
         id: editingConsultaId || Date.now(),
         data: document.getElementById('data-consulta').value,
         horario: document.getElementById('horario-consulta').value,
-        paciente: document.getElementById('nome-consulta').value,
+        paciente: document.getElementById('paciente-consulta').value,
         idade: document.getElementById('idade-consulta').value,
         responsavel: document.getElementById('responsavel-consulta').value,
         telefone: document.getElementById('telefone-consulta').value,
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
       editingConsultaId = id;
       document.getElementById('data-consulta').value = consulta.data;
       document.getElementById('horario-consulta').value = consulta.horario;
-      document.getElementById('nome-consulta').value = consulta.paciente;
+      document.getElementById('paciente-consulta').value = consulta.paciente;
       document.getElementById('idade-consulta').value = consulta.idade;
       document.getElementById('responsavel-consulta').value = consulta.responsavel;
       document.getElementById('telefone-consulta').value = consulta.telefone;
