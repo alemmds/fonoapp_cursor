@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Exibe a tela de login ao carregar a página
   loginScreen.style.display = 'flex';
-
+  
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     if (loginPassword.value === 'Clinicafono1570') {
@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       // Em caso de senha incorreta, exibe a mensagem de erro
       loginError.classList.remove('hidden');
-      loginError.textContent = 'Senha incorreta. Tente novamente.';
     }
   });
 
@@ -101,6 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         editingPacienteId = null;
       } else {
         dbPacientes.push(paciente);
+      }
+
       saveData('db_pacientes', dbPacientes);
       forms.paciente.reset();
       updatePacientesTable();
@@ -108,54 +109,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Função para atualizar a tabela de pacientes
-  window.updatePacientesTable = function () {
-    const tabela = document.getElementById('tabela-pacientes');
-    const tbody = tabela.getElementsByTagName('tbody')[0];
-    tbody.innerHTML = '';
+  // Função para adicionar/atualizar um especialista
+  if (forms.especialista) {
+    forms.especialista.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const especialista = {
+        id: editingEspecialistaId || Date.now(),
+        nome: document.getElementById('nome-especialista').value,
+        cpf: document.getElementById('cpf-especialista').value,
+        especialidade: document.getElementById('especialidade-especialista').value,
+        turno: document.getElementById('turno-especialista').value,
+        telefone: document.getElementById('telefone-especialista').value,
+        email: document.getElementById('email-especialista').value
+      };
 
-    dbPacientes.forEach(paciente => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td class="p-2">${paciente.nome}</td>
-        <td class="p-2">${paciente.cpf}</td>
-        <td class="p-2">${paciente.idade}</td>
-        <td class="p-2">${paciente.responsavel}</td>
-        <td class="p-2">${paciente.telefone}</td>
-        <td class="p-2">${paciente.email}</td>
-        <td class="p-2">${paciente.ultimaConsulta}</td>
-        <td class="p-2 flex space-x-2">
-          <button onclick="editarPaciente(${paciente.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Editar</button>
-          <button onclick="excluirPaciente(${paciente.id})" class="bg-red-500 text-white px-2 py-1 rounded">Excluir</button>
-        </td>
-      `;
-      tbody.appendChild(row);
+      if (editingEspecialistaId) {
+        const index = dbEspecialistas.findIndex(e => e.id === editingEspecialistaId);
+        dbEspecialistas[index] = especialista;
+        editingEspecialistaId = null;
+      } else {
+        dbEspecialistas.push(especialista);
+      }
+
+      saveData('db_especialistas', dbEspecialistas);
+      forms.especialista.reset();
+      updateProfissionaisTable();
+      alert('Especialista salvo com sucesso!');
     });
-  };
-
-  // Funções para editar e excluir paciente
-  window.editarPaciente = function (id) {
-    const paciente = dbPacientes.find(p => p.id === id);
-    if (paciente) {
-      editingPacienteId = id;
-      document.getElementById('nome-paciente').value = paciente.nome;
-      document.getElementById('cpf-paciente').value = paciente.cpf;
-      document.getElementById('idade-paciente').value = paciente.idade;
-      document.getElementById('responsavel-paciente').value = paciente.responsavel;
-      document.getElementById('telefone-paciente').value = paciente.telefone;
-      document.getElementById('email-paciente').value = paciente.email;
-      document.getElementById('ultima-consulta').value = paciente.ultimaConsulta;
-      showSection('cadastro-pacientes');
-    }
-  };
-
-  window.excluirPaciente = function (id) {
-    if (confirm('Tem certeza que deseja excluir este paciente?')) {
-      dbPacientes = dbPacientes.filter(p => p.id !== id);
-      saveData('db_pacientes', dbPacientes);
-      updatePacientesTable();
-    }
-  };
+  }
 
   // Função para adicionar/atualizar uma consulta
   if (forms.consulta) {
@@ -189,6 +170,55 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Função para atualizar a tabela de pacientes
+  window.updatePacientesTable = function () {
+    const tabela = document.getElementById('tabela-pacientes');
+    const tbody = tabela.getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+
+    dbPacientes.forEach(paciente => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="p-2">${paciente.nome}</td>
+        <td class="p-2">${paciente.cpf}</td>
+        <td class="p-2">${paciente.idade}</td>
+        <td class="p-2">${paciente.responsavel}</td>
+        <td class="p-2">${paciente.telefone}</td>
+        <td class="p-2">${paciente.email}</td>
+        <td class="p-2">${paciente.ultimaConsulta}</td>
+        <td class="p-2">
+          <button onclick="editarPaciente(${paciente.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Editar</button>
+          <button onclick="excluirPaciente(${paciente.id})" class="bg-red-500 text-white px-2 py-1 rounded">Excluir</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  };
+
+  // Função para atualizar a tabela de especialistas
+  window.updateProfissionaisTable = function () {
+    const tabela = document.getElementById('tabela-profissionais');
+    const tbody = tabela.getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+
+    dbEspecialistas.forEach(especialista => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="p-2">${especialista.nome}</td>
+        <td class="p-2">${especialista.cpf}</td>
+        <td class="p-2">${especialista.especialidade}</td>
+        <td class="p-2">${especialista.turno}</td>
+        <td class="p-2">${especialista.telefone}</td>
+        <td class="p-2">${especialista.email}</td>
+        <td class="p-2">
+          <button onclick="editarEspecialista(${especialista.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Editar</button>
+          <button onclick="excluirEspecialista(${especialista.id})" class="bg-red-500 text-white px-2 py-1 rounded">Excluir</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  };
+
   // Função para atualizar as tabelas de consultas
   window.updateConsultasTables = function () {
     const tabelaConsultasGerais = document.getElementById('tabela-consultas-gerais').getElementsByTagName('tbody')[0];
@@ -201,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dbConsultas.forEach(consulta => {
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td class="p -2">${consulta.data}</td>
+        <td class="p-2">${consulta.data}</td>
         <td class="p-2">${consulta.horario}</td>
         <td class="p-2">${consulta.paciente}</td>
         <td class="p-2">${consulta.idade}</td>
@@ -222,6 +252,53 @@ document.addEventListener('DOMContentLoaded', () => {
         tabelaConsultasDia.appendChild(rowDia);
       }
     });
+  };
+
+  // Funções para editar e excluir paciente
+  window.editarPaciente = function (id) {
+    const paciente = dbPacientes.find(p => p.id === id);
+    if (paciente) {
+      editingPacienteId = id;
+      document.getElementById('nome-paciente').value = paciente.nome;
+      document.getElementById('cpf-paciente').value = paciente.cpf;
+      document.getElementById('idade-paciente').value = paciente.idade;
+      document.getElementById('responsavel-paciente').value = paciente.responsavel;
+      document.getElementById('telefone-paciente').value = paciente.telefone;
+      document.getElementById('email-paciente').value = paciente.email;
+      document.getElementById('ultima-consulta').value = paciente.ultimaConsulta;
+      showSection('cadastro-pacientes');
+    }
+  };
+
+  window.excluirPaciente = function (id) {
+    if (confirm('Tem certeza que deseja excluir este paciente?')) {
+      dbPacientes = dbPacientes.filter(p => p.id !== id);
+      saveData('db_pacientes', dbPacientes);
+      updatePacientesTable();
+    }
+  };
+
+  // Funções para editar e excluir especialista
+  window.editarEspecialista = function (id) {
+    const especialista = dbEspecialistas.find(e => e.id === id);
+    if (especialista) {
+      editingEspecialistaId = id;
+      document.getElementById('nome-especialista').value = especialista.nome;
+      document.getElementById('cpf-especialista').value = especialista.cpf;
+      document.getElementById('especialidade-especialista').value = especialista.especialidade;
+      document.getElementById('turno-especialista').value = especialista.turno;
+      document.getElementById('telefone-especialista').value = especialista.telefone;
+      document.getElementById('email-especialista').value = especialista.email;
+      showSection('cadastro-especialistas');
+    }
+  };
+
+  window.excluirEspecialista = function (id) {
+    if (confirm('Tem certeza que deseja excluir este especialista?')) {
+      dbEspecialistas = dbEspecialistas.filter(e => e.id !== id);
+      saveData('db_especialistas', dbEspecialistas);
+      updateProfissionaisTable();
+    }
   };
 
   // Funções para editar e excluir consulta
@@ -250,86 +327,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Função para adicionar/atualizar um especialista
-  if (forms.especialista) {
-    forms.especialista.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const especialista = {
-        id: editingEspecialistaId || Date.now(),
-        nome: document.getElementById('nome-especialista').value,
-        cpf: document.getElementById('cpf-especialista').value,
-        especialidade: document.getElementById('especialidade-especialista').value,
-        turno: document.getElementById('turno-especialista').value,
-        telefone: document.getElementById('telefone-especialista').value,
-        email: document.getElementById('email-especialista').value
-      };
+  // Funções de filtro para Consultas e Pacientes
+  window.filtrarConsultasGerais = function() {
+    const nome = document.getElementById("filter-consulta-geral-nome").value.toLowerCase();
+    const data = document.getElementById("filter-consulta-geral-data").value;
+    const horario = document.getElementById("filter-consulta-geral-horario").value;
+    const table = document.getElementById("tabela-consultas-gerais");
+    const tbody = table.getElementsByTagName("tbody")[0];
+    const rows = tbody.getElementsByTagName("tr");
 
-      if (editingEspecialistaId) {
-        const index = dbEspecialistas.findIndex(e => e.id === editingEspecialistaId);
-        dbEspecialistas[index] = especialista;
-        editingEspecialistaId = null;
-      } else {
-        dbEspecialistas.push(especialista);
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName("td");
+      if (cells.length >= 3) {
+        const cellData = cells[0].textContent.trim();
+        const cellHorario = cells[1].textContent.trim();
+        const cellNome = cells[2].textContent.trim().toLowerCase();
+
+        const matchNome = !nome || cellNome.includes(nome);
+        const matchData = !data || cellData.includes(data);
+        const matchHorario = !horario || cellHorario.includes(horario);
+
+        rows[i].style.display = (matchNome && matchData && matchHorario) ? "" : "none";
       }
-
-      saveData('db_especialistas', dbEspecialistas);
-      forms.especialista.reset();
-      updateProfissionaisTable();
-      alert('Especialista salvo com sucesso!');
-    });
-  }
-
-  // Função para atualizar a tabela de profissionais
-  window.updateProfissionaisTable = function () {
-    const tabela = document.getElementById('tabela-profissionais');
-    const tbody = tabela.getElementsByTagName('tbody')[0];
-    tbody.innerHTML = '';
-
-    dbEspecialistas.forEach(especialista => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td class="p-2">${especialista.nome}</td>
-        <td class="p-2">${especialista.cpf}</td>
-        <td class="p-2">${especialista.especialidade}</td>
-        <td class="p-2">${especialista.turno}</td>
-        <td class="p-2">${especialista.telefone}</td>
-        <td class="p-2">${especialista.email}</td>
-        <td class="p-2">
-          <button onclick="editarEspecialista(${especialista.id})" class="bg-yellow-500 text-white px- 2 py-1 rounded">Editar</button>
-          <button onclick="excluirEspecialista(${especialista.id})" class="bg-red-500 text-white px-2 py-1 rounded">Excluir</button>
-        </td>
-      `;
-      tbody.appendChild(row);
-    });
-  };
-
-  // Funções para editar e excluir especialista
-  window.editarEspecialista = function (id) {
-    const especialista = dbEspecialistas.find(e => e.id === id);
-    if (especialista) {
-      editingEspecialistaId = id;
-      document.getElementById('nome-especialista').value = especialista.nome;
-      document.getElementById('cpf-especialista').value = especialista.cpf;
-      document.getElementById('especialidade-especialista').value = especialista.especialidade;
-      document.getElementById('turno-especialista').value = especialista.turno;
-      document.getElementById('telefone-especialista').value = especialista.telefone;
-      document.getElementById('email-especialista').value = especialista.email;
-      showSection('cadastro-especialistas');
     }
   };
 
-  window.excluirEspecialista = function (id) {
-    if (confirm('Tem certeza que deseja excluir este especialista?')) {
-      dbEspecialistas = dbEspecialistas.filter(e => e.id !== id);
-      saveData('db_especialistas', dbEspecialistas);
-      updateProfissionaisTable();
+  window.filtrarConsultasDia = function() {
+    const nome = document.getElementById("filter-consulta-dia-nome").value.toLowerCase();
+    const data = document.getElementById("filter-consulta-dia-data").value;
+    const horario = document.getElementById("filter-consulta-dia-horario").value;
+    const table = document.getElementById("tabela-consultas-dia");
+    const tbody = table.getElementsByTagName("tbody")[0];
+    const rows = tbody.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName("td");
+      if (cells.length >= 3) {
+        const cellData = cells[0].textContent.trim();
+        const cellHorario = cells[1].textContent.trim();
+        const cellNome = cells[2].textContent.trim().toLowerCase();
+
+        const matchNome = !nome || cellNome.includes(nome);
+        const matchData = !data || cellData.includes(data);
+        const matchHorario = !horario || cellHorario.includes(horario);
+
+        rows[i].style.display = (matchNome && matchData && matchHorario) ? "" : "none";
+      }
+    }
+  };
+
+  window.filtrarPacientes = function() {
+    const nome = document.getElementById("filter-paciente-nome").value.toLowerCase();
+    const table = document.getElementById("tabela-pacientes");
+    const tbody = table.getElementsByTagName("tbody")[0];
+    const rows = tbody.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName("td");
+      if (cells.length > 0) {
+        const cellNome = cells[0].textContent.trim().toLowerCase();
+        rows[i].style.display = (!nome || cellNome.includes(nome)) ? "" : "none";
+      }
     }
   };
 
   // Inicialização das tabelas e carregamento dos dados
   updatePacientesTable();
-  updateConsultasTables();
   updateProfissionaisTable();
+  updateConsultasTables();
 
   // Registra o Service Worker, se suportado
   if ('serviceWorker' in navigator) {
